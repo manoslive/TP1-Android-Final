@@ -9,11 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 public class MainActivity extends AppCompatActivity {
     // Constantes
@@ -21,14 +26,20 @@ public class MainActivity extends AppCompatActivity {
     public final int PAUSE = 500;
 
     // Composantes
-    private EditText ET_AdresseSousReseau;
+    private EditText ET_AdressePart1;
+    private EditText ET_AdressePart2;
+    private EditText ET_AdressePart3;
     private EditText ET_DebutPlage;
     private EditText ET_FinPlage;
     private EditText ET_NumeroPort;
     private ProgressBar PB_LoadBar;
     private TextView TV_Liste;
+    private ScrollView SV_Scroll;
 
     // Variables
+    public String adressePart1;
+    public String adressePart2;
+    public String adressePart3;
     public String adresse;
     public String debut;
     public String fin;
@@ -42,36 +53,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Récupération des composants
-        ET_AdresseSousReseau = (EditText) findViewById(R.id.editText1);
+        ET_AdressePart1 = (EditText) findViewById(R.id.ET_Part1);
+        ET_AdressePart2 = (EditText) findViewById(R.id.ET_Part2);
+        ET_AdressePart3 = (EditText) findViewById(R.id.ET_Part3);
         ET_DebutPlage = (EditText) findViewById(R.id.editText2);
         ET_FinPlage = (EditText) findViewById(R.id.editText3);
         ET_NumeroPort = (EditText) findViewById(R.id.editText4);
         PB_LoadBar = (ProgressBar) findViewById(R.id.progressBar);
         TV_Liste = (TextView) findViewById(R.id.textView5);
+        SV_Scroll = (ScrollView) findViewById(R.id.scrollView);
     }
 
     public void Demarrer(View v) {
+        TV_Liste.setText("");
         // On vérifie que tous les champs sont remplis
-        if (!VerifierChamps()) {
-            Toast message = Toast.makeText(MainActivity.this,
-                    // Message affiché à l'utilisateur
-                    "Un des champs requis est vide. Veuillez le remplir IMMÉDIATEMENT!", Toast.LENGTH_SHORT);
-            message.show();
-        } else {
+        if (VerifierValeursEntrees()) {
             // Si tous les champs sont remplis, on affecte leur valeur au variables correspondantes
-            adresse = ET_AdresseSousReseau.getText().toString();
+            adressePart1 = ET_AdressePart1.getText().toString();
+            adressePart2 = ET_AdressePart2.getText().toString();
+            adressePart3 = ET_AdressePart3.getText().toString();
+
             debut = ET_DebutPlage.getText().toString();
             fin = ET_FinPlage.getText().toString();
             port = ET_NumeroPort.getText().toString();
             numPort = Integer.parseInt(fin) - Integer.parseInt(debut);
-        }
-        if (VerifierValeursEntrees()) {
+
             estEnArret = false;
             RechercherIps laRecherche = new RechercherIps();
             // Début de la recherche
             laRecherche.execute();
+            adresse = adressePart1 + "." + adressePart2 + "." + adressePart3;
         }
-
     }
 
     public class RechercherIps extends AsyncTask<Void, String, Void> {
@@ -81,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     "Début de la recherche Ip",
                     Toast.LENGTH_SHORT).show();
+
         }
 
         @Override
@@ -92,6 +105,25 @@ public class MainActivity extends AppCompatActivity {
             for (int i = Integer.parseInt(debut); i <= Integer.parseInt(fin); i++) {
                 ipValides = "";
 
+                try {
+                    Socket soc = new Socket();
+                    InetSocketAddress unISAddress = new InetSocketAddress(adresse + "." + i, Integer.parseInt(port));
+                    soc.connect(unISAddress, TIMEOUT);
+                    ipValides = soc.getRemoteSocketAddress().toString();
+                }
+                catch(SocketException so)
+                {
+                    //ipValides = so.toString();
+                }
+                catch(SocketTimeoutException ste)
+                {
+                    //ipValides = ste.toString();
+                }
+                catch (IOException ioe) {
+                    //ipValides = ioe.toString();
+                }
+
+                /*
                 // Vérification de chaque adresse ip
                 if (testerIpPort(adresse + "." + i, Integer.parseInt(port), TIMEOUT)) {
                     ipValides = adresse + "." + i;
@@ -107,6 +139,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // la méthode publishProgress met à jour l'IUG en
                 // invoquant indirectement la méthode onProgressUpdate
+                publishProgress(i + "", ipValides);
+                */
+                while (estEnArret) {
+                    try {
+                        Thread.sleep(PAUSE);
+                    } catch (Exception e) {
+                    }
+                }
                 publishProgress(i + "", ipValides);
             }
             return null;
@@ -124,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             // Mise à jour du TextView si l'ip est valide.
             if (!valeurs[1].equals("")) {
                 TV_Liste.append(valeurs[1] + "\n");
+                SV_Scroll.fullScroll(View.FOCUS_DOWN);
             }
         }
 
@@ -144,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
             InetSocketAddress unISAddress = new InetSocketAddress(leIp, lePort);
 
             // On met le timeout
+            unSocket.setSoTimeout(leTimeOut);
             unSocket.connect(unISAddress, leTimeOut);
             unSocket.close();
         } catch (Exception e) {
@@ -157,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         boolean estVerifie = true;
 
         // Si un des EditText est vide la booléenne est mise à false et on ne peut pas démarrer
-        if (ET_AdresseSousReseau.getText().equals("") || ET_DebutPlage.getText().equals("") || ET_FinPlage.getText().equals("") || ET_NumeroPort.getText().equals(""))
+        if (ET_AdressePart1.getText().toString().equals("") || ET_AdressePart2.getText().toString().equals("") || ET_AdressePart3.getText().equals("") || ET_DebutPlage.getText().toString().equals("") || ET_FinPlage.getText().toString().equals("") || ET_NumeroPort.getText().toString().equals(""))
             estVerifie = false;
 
         return estVerifie;
@@ -167,16 +209,31 @@ public class MainActivity extends AppCompatActivity {
         boolean estValide = true;
         String messageErreur = "";
 
+        if (ET_AdressePart1.getText().toString().equals("") || ET_AdressePart2.getText().toString().equals("") || ET_AdressePart3.getText().equals("") || ET_DebutPlage.getText().toString().equals("") || ET_FinPlage.getText().toString().equals("") || ET_NumeroPort.getText().toString().equals(""))
+        {
+            estValide = false;
+            messageErreur = "ERREUR : Les champs ne doivent pas être vides";
+        }
         // La début de la plage doit être plus petite que celle de la fin
-        if (Integer.parseInt(fin) <= Integer.parseInt(debut)) {
+        else if (Integer.parseInt(ET_FinPlage.getText().toString()) <= Integer.parseInt(ET_DebutPlage.getText().toString())) {
             estValide = false;
             messageErreur = "ERREUR : La début de la plage doit être plus petite que celle de la fin";
-        } else if (Integer.parseInt(fin) < 2 || Integer.parseInt(debut) < 2) {
+        } else if (Integer.parseInt(ET_FinPlage.getText().toString()) < 2 || Integer.parseInt(ET_DebutPlage.getText().toString()) < 2) {
             estValide = false;
             messageErreur = "ERREUR : La valeur du champs doit être supérieure à 2";
-        } else if (Integer.parseInt(fin) > 254 || Integer.parseInt(debut) > 254) {
+        } else if (Integer.parseInt(ET_FinPlage.getText().toString()) > 254 || Integer.parseInt(ET_DebutPlage.getText().toString()) > 254) {
             estValide = false;
             messageErreur = "ERREUR : La valeur du champs doit être inférieure à 255";
+        }
+        else if(Integer.parseInt(ET_AdressePart1.getText().toString()) < 1 || Integer.parseInt(ET_AdressePart1.getText().toString()) > 255 || Integer.parseInt(ET_AdressePart2.getText().toString()) < 1 || Integer.parseInt(ET_AdressePart2.getText().toString()) > 255 ||Integer.parseInt(ET_AdressePart3.getText().toString()) < 1 || Integer.parseInt(ET_AdressePart3.getText().toString()) > 255)
+        {
+            estValide = false;
+            messageErreur = "ERREUR : La valeur du champs doit être inférieure à 255 et supérieure à 1";
+        }
+        else if(Integer.parseInt(ET_NumeroPort.getText().toString()) < 1 || Integer.parseInt(ET_NumeroPort.getText().toString()) > 65535)
+        {
+            estValide = false;
+            messageErreur = "ERREUR : Le numéro de port doit se situer en 1 et 65535";
         }
 
         // Si le champs est invalide, on affiche le message d'erreur

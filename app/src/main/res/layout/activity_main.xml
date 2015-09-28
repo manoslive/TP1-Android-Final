@@ -6,6 +6,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".leDoge"
     android:id="@+id/RL_main">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,14 +25,32 @@
                     android:text="Adresse de sous-réseau"
                     android:id="@+id/textView1" />
                 <EditText
+                android:stretchColumns="true"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ET_Part1"
+                android:text="206"
+                android:digits="0123456789"
+                android:inputType="numberDecimal"
+                android:maxLength="3"/>
+                <EditText
                     android:stretchColumns="true"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editText1"
-                    android:text="206.167.212"
-                    android:digits="0123456789."
+                    android:id="@+id/ET_Part2"
+                    android:text="167"
+                    android:digits="0123456789"
                     android:inputType="numberDecimal"
-                    android:maxLength="11"/>
+                    android:maxLength="3"/>
+                <EditText
+                    android:stretchColumns="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ET_Part3"
+                    android:text="212"
+                    android:digits="0123456789"
+                    android:inputType="numberDecimal"
+                    android:maxLength="3"/>
             </TableRow>
 
             <TableRow
@@ -49,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:text="2"
                     android:id="@+id/editText2"
-                    android:digits="0123456789."
+                    android:digits="0123456789"
                     android:inputType="numberDecimal"
                     android:maxLength="3"/>
             </TableRow>
@@ -69,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:text="254"
                     android:id="@+id/editText3"
-                    android:digits="0123456789."
+                    android:digits="0123456789"
                     android:inputType="numberDecimal"
                     android:maxLength="3"/>
             </TableRow>
@@ -88,7 +107,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/editText4"
-                    android:digits="0123456789."
+                    android:digits="0123456789"
                     android:text="80"
                     android:inputType="numberDecimal"
                     android:maxLength="5"/>
