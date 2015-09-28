@@ -1,0 +1,153 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".leDoge"
+    android:id="@+id/RL_main">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/LL_Tableau">
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Adresse de sous-réseau"
+                    android:id="@+id/textView1" />
+                <EditText
+                    android:stretchColumns="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText1"
+                    android:text="206.167.212"
+                    android:digits="0123456789."
+                    android:inputType="numberDecimal"
+                    android:maxLength="11"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Début de la plage"
+                    android:id="@+id/textView2" />
+                <EditText
+                    android:stretchColumns="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:id="@+id/editText2"
+                    android:digits="0123456789."
+                    android:inputType="numberDecimal"
+                    android:maxLength="3"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Fin de la plage"
+                    android:id="@+id/textView3" />
+                <EditText
+                    android:stretchColumns="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="254"
+                    android:id="@+id/editText3"
+                    android:digits="0123456789."
+                    android:inputType="numberDecimal"
+                    android:maxLength="3"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Numéro de port"
+                    android:id="@+id/textView4" />
+                <EditText
+                    android:stretchColumns="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText4"
+                    android:digits="0123456789."
+                    android:text="80"
+                    android:inputType="numberDecimal"
+                    android:maxLength="5"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/LL_Tableau"
+        android:id="@+id/LL_ProgressBar">
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@android:drawable/progress_horizontal"
+            android:indeterminate="false"
+            android:indeterminateOnly="false"
+            android:id="@+id/progressBar"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/LL_Buttons"
+        android:layout_below="@id/LL_ProgressBar">
+        <Button
+            android:id="@+id/BTN_Start"
+            android:text="Démarrer/Continuer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="Demarrer" />
+        <Button
+            android:stretchColumns="true"
+            android:id="@+id/BTN_Stop"
+            android:text="Suspendre"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:onClick="mettreSurPause"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/LL_TextView"
+        android:orientation="horizontal"
+        android:layout_below="@id/LL_Buttons">
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollView">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:id="@+id/textView5" />
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>
